@@ -16,6 +16,6 @@
 
 filter="$@"
 
-__command="docker ps -a | awk '/$filter/'"
+__command="docker ps -a --no-trunc=true | awk '/$filter/'"
 
 $__exec $__command
