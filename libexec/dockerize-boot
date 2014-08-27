@@ -11,6 +11,7 @@
 #
 # A directory with the image name must exist in $DOCKER_GITHUB_REPOS.
 
+set -x
 set -e
 
 if [ -z "$1" ]
@@ -39,7 +40,7 @@ then
   container_tag="${1}"
 
   # For git branches, we don't want more than 1 container per commit
-  if [[ -n $(dockerize ps | grep $docker_image | grep $container_tag) ]]
+  if [[ -n $(dockerize ps | grep $docker_image | grep $docker_image_tag.$container_tag) ]]
   then
     echo "Container $docker_image:$docker_image_tag already running"
     exit 0
@@ -96,8 +97,8 @@ else
   $__exec "rm -f $cidfile"
   if [ -z $container_tag ]
   then
-    $__exec "dockerize run -cidfile $cidfile $envs -d $docker_image:$docker_image_tag"
+    $__exec "dockerize run --cidfile $cidfile $envs -d $docker_image:$docker_image_tag"
   else
-    $__exec "dockerize run -cidfile $cidfile $envs --name $docker_image_tag.$container_tag -d $docker_image:$docker_image_tag"
+    $__exec "dockerize run --cidfile $cidfile $envs --name $docker_image_tag.$container_tag -d $docker_image:$docker_image_tag"
   fi
 fi
